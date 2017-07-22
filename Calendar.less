@@ -1,0 +1,40 @@
+.rc-month-calendar-cont {
+
+  width: 100%;
+  
+  .rc-month-calendar {
+
+    text-align: center;
+    border-spacing: 0;
+    border-collapse: collapse;
+
+    border: 1px solid black;
+
+    width: 100%;
+
+    td, th {
+      padding: 1.5% 0;
+    }
+    
+    .header {
+
+      &.month, &.day-names {
+        border-bottom: 1px solid black;
+      }
+
+    }
+
+    .date {
+      border: 1px solid black;
+
+      &.prev-month, &.next-month {
+        color: lightgray;
+      }
+
+      &.today {
+        background-color: yellow;
+      }
+    }
+
+  }
+}
