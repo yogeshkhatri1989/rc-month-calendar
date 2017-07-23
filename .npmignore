@@ -1,7 +1,14 @@
 node_modules
+main.js
 Calendar.js
 Calendar.less
 index.html
 style.less
 webpack.config.js
+webpack.build.js
+screenshots
 yarn.lock
+dist/main.js
+dist/main.css
+dist/style.css
+dist/index.html

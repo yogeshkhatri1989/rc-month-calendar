@@ -1,6 +1,6 @@
 {
   "name": "rc-month-calendar",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "React month view calendar",
   "main": "dist/calendar.js",
   "scripts": {

@@ -3,13 +3,15 @@ import React, { Component } from 'react';
 let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 let day = 1000 * 60 * 60 * 24;
 
+const compDate = (date1, date2) => date1.toDateString() == date2.toDateString();
+
 class MonthCalendar extends Component {
 
   constructor(props) {
     
     super(props);
 
-    let date = this.props.date instanceof Date ? this.props.date : new Date();
+    let date = this.props.selectedDate instanceof Date ? this.props.selectedDate : new Date();
     date.setHours(0, 0, 0, 0);
 
     this.state = {
@@ -65,6 +67,10 @@ class MonthCalendar extends Component {
 
   onDateClick(date, event) {
 
+    if (this.props.isDateEnabled && !this.props.isDateEnabled(date)) {
+      return;
+    }
+
     let selectedDate = document.querySelector(".date.selected");
     selectedDate && selectedDate.classList.remove("selected");
 
@@ -74,10 +80,17 @@ class MonthCalendar extends Component {
 
     this.setState({
       selectedDate: date
-    })
+    });
     
     let onDateClick = this.props.onDateClick;
     onDateClick && onDateClick(date, oldSelectedDate);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      selectedDate: nextProps.selectedDate,
+      renderTouch: !this.state.renderTouch
+    })
   }
 
   render() {
@@ -97,17 +110,11 @@ class MonthCalendar extends Component {
     let travDateMonth = travDate.getMonth();
 
     let monthDates = [];
-    let selectedKlass = "selected";
-
+    
     let dateKlass = this.props.dateKlass || "";
 
     let containerKlass = this.props.containerKlass || "";
-    let headerMonthKlass = this.props.headerMonthKlass || "";
-    let headerDayKlass = this.props.headerDayKlass || "";
-    let headerWeekDayKlass = `day ${this.props.headerWeekDayKlass || ""}`;
-    let weekContKlass = this.props.weekContKlass || "";
-    let monthDescKlass = this.props.monthDescKlass || "";
-
+    
     let prevButtonKlass = this.props.prevButtonKlass || "";
     let nextButtonKlass = this.props.nextButtonKlass || "";
 
@@ -120,8 +127,9 @@ class MonthCalendar extends Component {
 
       monthDates.push((
         <td key={travDate}
-          className={`date prev-month ${dateKlass} ${isItSelected ? selectedKlass : ""}`}
-          onClick={this.onDateClick.bind(this, travDate)}>{travDate.getDate()}</td>
+          className={`date prev-month disabled-date ${dateKlass}`}>
+          {travDate.getDate()}
+        </td>
       ));
 
       travDate = new Date(travDate.getTime() + day);
@@ -129,15 +137,24 @@ class MonthCalendar extends Component {
     }
 
     while (travDateMonth == currMonth) {
-      let isItSelected = travDate.toDateString() == selectedDate.toDateString();
 
       let isItToday = travDate.toDateString() == new Date().toDateString();
       let todayKlass = isItToday ? "today" : "";
 
+      let isItSelected = travDate.toDateString() == selectedDate.toDateString();
+      let selectedKlass = isItSelected ? "selected" : "";
+
+      let dateEnableKlass = "enabled-date";
+      if (this.props.isDateEnabled && !this.props.isDateEnabled(travDate)) {
+        dateEnableKlass = "disabled-date";
+      }
+
       monthDates.push((
         <td key={travDate}
-          className={`date curr-month ${todayKlass} ${dateKlass} ${isItSelected ? selectedKlass : ""}`}
-          onClick={this.onDateClick.bind(this, travDate)}>{travDate.getDate()}</td>
+          className={`date curr-month ${todayKlass} ${dateKlass} ${selectedKlass} ${dateEnableKlass}`}
+          onClick={this.onDateClick.bind(this, travDate)}>
+          {travDate.getDate()}
+        </td>
       ));
 
       travDate = new Date(travDate.getTime() + day);
@@ -149,8 +166,9 @@ class MonthCalendar extends Component {
 
       monthDates.push((
         <td key={travDate}
-          className={`date next-month ${dateKlass} ${isItSelected ? selectedKlass : ""}`}
-          onClick={this.onDateClick.bind(this, travDate)}>{travDate.getDate()}</td>
+          className={`date next-month disabled-date ${dateKlass}`}>
+          {travDate.getDate()}
+        </td>
       ));
 
       travDate = new Date(travDate.getTime() + day);
@@ -163,7 +181,9 @@ class MonthCalendar extends Component {
     while (dateIndex < monthDates.length) {
       datesContent.push((
         <tr key={`week-${dateIndex / 7}`}
-           className={`week ${weekContKlass}`}>{monthDates.slice(dateIndex, dateIndex + 7)}</tr>
+          className={`week week-${(dateIndex / 7) + 1}`}>
+          {monthDates.slice(dateIndex, dateIndex + 7)}
+        </tr>
       ));
       dateIndex += 7;
     }
@@ -172,12 +192,12 @@ class MonthCalendar extends Component {
       <div className="rc-month-calendar-cont">
         <table className={`rc-month-calendar ${containerKlass}`}>
           <thead>
-            <tr className={`header month ${headerMonthKlass}`}>
+            <tr className={`header month`}>
               <th className={`month-button prev ${prevButtonKlass}`}
                 onClick={this.prevMonth.bind(this)}
                 dangerouslySetInnerHTML={{__html: prevButtonHtml}}></th>
               <th colSpan={5}
-                className={`month-desc  ${monthDescKlass}`}
+                className={`month-desc`}
                 onClick={this.currMonth.bind(this)}>
                 {month} {year}
               </th>
@@ -185,14 +205,14 @@ class MonthCalendar extends Component {
                 onClick={this.nextMonth.bind(this)}
                 dangerouslySetInnerHTML={{__html: nextButtonHtml}}></th>
             </tr>
-            <tr className={`header day-names ${headerDayKlass}`}>
-              <th className={headerWeekDayKlass}>S</th>
-              <th className={headerWeekDayKlass}>M</th>
-              <th className={headerWeekDayKlass}>T</th>
-              <th className={headerWeekDayKlass}>W</th>
-              <th className={headerWeekDayKlass}>T</th>
-              <th className={headerWeekDayKlass}>F</th>
-              <th className={headerWeekDayKlass}>S</th>
+            <tr className={`header day-names`}>
+              <th className="day sun">S</th>
+              <th className="day mon">M</th>
+              <th className="day tue">T</th>
+              <th className="day wed">W</th>
+              <th className="day thu">T</th>
+              <th className="day fri">F</th>
+              <th className="day sat">S</th>
             </tr>
           </thead>
           <tbody>
@@ -204,6 +224,21 @@ class MonthCalendar extends Component {
       </div>
     );
   }
+}
+
+MonthCalendar.propTypes = {
+  containerKlass: React.PropTypes.string,
+  prevButtonKlass: React.PropTypes.string,
+  nextButtonKlass: React.PropTypes.string,
+  disabledDateKlass: React.PropTypes.string,
+  enabledDateKlass: React.PropTypes.string,
+  dateKlass: React.PropTypes.string,
+  prevButtonHtml: React.PropTypes.string,
+  nextButtonHtml: React.PropTypes.string,
+  onDateClick: React.PropTypes.func,
+  onMonthChange: React.PropTypes.func,
+  selectedDate: React.PropTypes.object,
+  isDateEnabled: React.PropTypes.func
 }
 
 import "./Calendar.less";
