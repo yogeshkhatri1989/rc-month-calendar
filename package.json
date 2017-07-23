@@ -4,7 +4,8 @@
   "description": "React month view calendar",
   "main": "dist/calendar.js",
   "scripts": {
-    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot --inline --content-base dist",
+    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot --inline --content-base dist --config webpack.config.js",
+    "build": "./node_modules/webpack/bin/webpack.js -p --config webpack.build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

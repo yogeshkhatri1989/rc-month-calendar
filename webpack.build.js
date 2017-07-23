@@ -1,6 +1,5 @@
 var path = require("path");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var extractCSS = new ExtractTextPlugin({
                         filename: "[name].css",
@@ -15,12 +14,13 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist"),
     publicPath: "",
-    filename: "[name].js"
+    filename: "[name].js",
+    libraryTarget: 'commonjs2',
+    library: 'rc-month-calendar'
   },
-  devServer: {
-    hot: true,
-    inline: true,
-    port: 3000
+  externals: {
+    'react': 'react',
+    'react-dom': 'react-dom'
   },
   module: {
     loaders: [
@@ -35,10 +35,6 @@ module.exports = {
           ]
         }
       },
-      { 
-        test: /\.css$/, 
-        loader: extractCSS.extract({fallback: "style-loader", use: "css-loader"})
-      },
       {
         test: /\.less$/,
         loader: extractCSS.extract({fallback: "style-loader", use: "css-loader!less-loader"})
@@ -46,9 +42,6 @@ module.exports = {
     ]
   },
   plugins: [
-    extractCSS,
-    new CopyWebpackPlugin([
-      { from: './index.html' },
-    ])
+    extractCSS
   ]
 }

@@ -13,88 +13,148 @@ class MonthCalendar extends Component {
     date.setHours(0, 0, 0, 0);
 
     this.state = {
-      selDate: date
+      currentDate: date,
+      selectedDate: date
     }
     
   }
 
   nextMonth() {
 
-    let selDate = this.state.selDate;
-    let selMonth = selDate.getMonth();
-
-    let newSelDate = new Date(selDate.getTime() + (day * (selDate.getDate() < 15 ? 30 : 20)));
+    let currentDate = this.state.currentDate;
+    
+    let newCurrentDate = new Date(currentDate.getTime() + (day * (currentDate.getDate() < 15 ? 30 : 20)));
 
     this.setState({
-      selDate: newSelDate
+      currentDate: newCurrentDate
     });
+
+    let onMonthChange = this.props.onMonthChange;
+    onMonthChange && onMonthChange(newCurrentDate, currentDate);
   }
 
   currMonth() {
-    this.setState({
-      selDate: new Date()
-    });
+
+    let currentDate = this.state.currentDate;
+    let today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (currentDate.getTime() != today.getTime()) {
+      this.setState({
+        currentDate: today
+      });
+
+      let onMonthChange = this.props.onMonthChange;
+      onMonthChange && onMonthChange(today, currentDate);
+    }
   }
 
   prevMonth() {
 
-    let selDate = this.state.selDate;
-    let selMonth = selDate.getMonth();
-
-    let newSelDate = new Date(selDate.getTime() - (day * (selDate.getDate() > 15 ? 30 : 20)));
+    let currentDate = this.state.currentDate;
+    
+    let newCurrentDate = new Date(currentDate.getTime() - (day * (currentDate.getDate() > 15 ? 30 : 20)));
 
     this.setState({
-      selDate: newSelDate
+      currentDate: newCurrentDate
     });
+
+    let onMonthChange = this.props.onMonthChange;
+    onMonthChange && onMonthChange(newCurrentDate, currentDate);
+  }
+
+  onDateClick(date, event) {
+
+    let selectedDate = document.querySelector(".date.selected");
+    selectedDate && selectedDate.classList.remove("selected");
+
+    event.target.classList.add("selected");
+
+    let oldSelectedDate = this.state.selectedDate;
+
+    this.setState({
+      selectedDate: date
+    })
+    
+    let onDateClick = this.props.onDateClick;
+    onDateClick && onDateClick(date, oldSelectedDate);
   }
 
   render() {
 
-    let selDate = this.state.selDate;
-    let month = months[selDate.getMonth()];
-    let year = selDate.getFullYear();
+    let selectedDate = this.state.selectedDate;
 
-    let currMonth = selDate.getMonth();
+    let currentDate = this.state.currentDate;
+    let month = months[currentDate.getMonth()];
+    let year = currentDate.getFullYear();
 
-    let firstDate = new Date(selDate.getTime() - (day * (selDate.getDate() - 1)));
+    let currMonth = currentDate.getMonth();
+
+    let firstDate = new Date(currentDate.getTime() - (day * (currentDate.getDate() - 1)));
     let firstDay = firstDate.getDay();
 
-    let currDate = new Date(firstDate.getTime() - (day * firstDay));
-    let currDateMonth = currDate.getMonth();
+    let travDate = new Date(firstDate.getTime() - (day * firstDay));
+    let travDateMonth = travDate.getMonth();
 
     let monthDates = [];
+    let selectedKlass = "selected";
 
-    while (currDateMonth != currMonth) {
+    let dateKlass = this.props.dateKlass || "";
+
+    let containerKlass = this.props.containerKlass || "";
+    let headerMonthKlass = this.props.headerMonthKlass || "";
+    let headerDayKlass = this.props.headerDayKlass || "";
+    let headerWeekDayKlass = `day ${this.props.headerWeekDayKlass || ""}`;
+    let weekContKlass = this.props.weekContKlass || "";
+    let monthDescKlass = this.props.monthDescKlass || "";
+
+    let prevButtonKlass = this.props.prevButtonKlass || "";
+    let nextButtonKlass = this.props.nextButtonKlass || "";
+
+    let prevButtonHtml = this.props.prevButtonHtml == undefined ? "&lt;" : this.props.prevButtonHtml;
+    let nextButtonHtml = this.props.nextButtonHtml == undefined ? "&gt;" : this.props.nextButtonHtml;
+
+    while (travDateMonth != currMonth) {
+
+      let isItSelected = travDate.toDateString() == selectedDate.toDateString();
+
       monthDates.push((
-        <td key={currDate}
-          className="date prev-month">{currDate.getDate()}</td>
+        <td key={travDate}
+          className={`date prev-month ${dateKlass} ${isItSelected ? selectedKlass : ""}`}
+          onClick={this.onDateClick.bind(this, travDate)}>{travDate.getDate()}</td>
       ));
 
-      currDate = new Date(currDate.getTime() + day);
-      currDateMonth = currDate.getMonth();
+      travDate = new Date(travDate.getTime() + day);
+      travDateMonth = travDate.getMonth();
     }
 
-    while (currDateMonth == currMonth) {
-      let isItToday = currDate.toDateString() == new Date().toDateString();
+    while (travDateMonth == currMonth) {
+      let isItSelected = travDate.toDateString() == selectedDate.toDateString();
+
+      let isItToday = travDate.toDateString() == new Date().toDateString();
       let todayKlass = isItToday ? "today" : "";
 
       monthDates.push((
-        <td key={currDate}
-          className={`date curr-month ${todayKlass}`}>{currDate.getDate()}</td>
+        <td key={travDate}
+          className={`date curr-month ${todayKlass} ${dateKlass} ${isItSelected ? selectedKlass : ""}`}
+          onClick={this.onDateClick.bind(this, travDate)}>{travDate.getDate()}</td>
       ));
 
-      currDate = new Date(currDate.getTime() + day);
-      currDateMonth = currDate.getMonth();
+      travDate = new Date(travDate.getTime() + day);
+      travDateMonth = travDate.getMonth();
     }
 
-    while (currDate.getDay()) {
+    while (travDate.getDay()) {
+      let isItSelected = travDate.toDateString() == selectedDate.toDateString();
+
       monthDates.push((
-        <td key={currDate}
-          className="date next-month">{currDate.getDate()}</td>
+        <td key={travDate}
+          className={`date next-month ${dateKlass} ${isItSelected ? selectedKlass : ""}`}
+          onClick={this.onDateClick.bind(this, travDate)}>{travDate.getDate()}</td>
       ));
 
-      currDate = new Date(currDate.getTime() + day);
-      currDateMonth = currDate.getMonth();
+      travDate = new Date(travDate.getTime() + day);
+      travDateMonth = travDate.getMonth();
     }
 
     let datesContent = [];
@@ -103,30 +163,36 @@ class MonthCalendar extends Component {
     while (dateIndex < monthDates.length) {
       datesContent.push((
         <tr key={`week-${dateIndex / 7}`}
-           className="week">{monthDates.slice(dateIndex, dateIndex + 7)}</tr>
+           className={`week ${weekContKlass}`}>{monthDates.slice(dateIndex, dateIndex + 7)}</tr>
       ));
       dateIndex += 7;
     }
 
     return (
       <div className="rc-month-calendar-cont">
-        <table className={`rc-month-calendar ${this.props.containerKlass}`}>
+        <table className={`rc-month-calendar ${containerKlass}`}>
           <thead>
-            <tr className="header month">
-              <th className="month-button prev" onClick={this.prevMonth.bind(this)}>&lt;</th>
-              <th colSpan={5} className="month" onClick={this.currMonth.bind(this)}>
+            <tr className={`header month ${headerMonthKlass}`}>
+              <th className={`month-button prev ${prevButtonKlass}`}
+                onClick={this.prevMonth.bind(this)}
+                dangerouslySetInnerHTML={{__html: prevButtonHtml}}></th>
+              <th colSpan={5}
+                className={`month-desc  ${monthDescKlass}`}
+                onClick={this.currMonth.bind(this)}>
                 {month} {year}
               </th>
-              <th className="month-button prev" onClick={this.nextMonth.bind(this)}>&gt;</th>
+              <th className={`month-button next ${nextButtonKlass}`}
+                onClick={this.nextMonth.bind(this)}
+                dangerouslySetInnerHTML={{__html: nextButtonHtml}}></th>
             </tr>
-            <tr className="header day-names">
-              <th className="day">S</th>
-              <th className="day">M</th>
-              <th className="day">T</th>
-              <th className="day">W</th>
-              <th className="day">T</th>
-              <th className="day">F</th>
-              <th className="day">S</th>
+            <tr className={`header day-names ${headerDayKlass}`}>
+              <th className={headerWeekDayKlass}>S</th>
+              <th className={headerWeekDayKlass}>M</th>
+              <th className={headerWeekDayKlass}>T</th>
+              <th className={headerWeekDayKlass}>W</th>
+              <th className={headerWeekDayKlass}>T</th>
+              <th className={headerWeekDayKlass}>F</th>
+              <th className={headerWeekDayKlass}>S</th>
             </tr>
           </thead>
           <tbody>
