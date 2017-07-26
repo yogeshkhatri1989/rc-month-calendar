@@ -34,21 +34,21 @@ Callback called when month changed (receives `newMonth` and `oldMonth` as argume
 Callback to check if date should be enabled for click, if not function passed, all dates are enabled by default
 #### selectedDate: `React.PropTypes.object`
 current date to be selected, default `new Date`
-#### containerKlass: `React.PropTypes.string`
+#### containerClass: `React.PropTypes.string`
 class name to add on the monthe calendar top level element.
-#### prevButtonKlass: `React.PropTypes.string`
+#### prevButtonClass: `React.PropTypes.string`
 class name to add on the previous month button element
-#### nextButtonKlass: `React.PropTypes.string`
+#### nextButtonClass: `React.PropTypes.string`
 class name to add on the next month button element
 #### prevButtonHtml: `React.PropTypes.string`
 HTML to replace for previous button element (default `<`)
 #### nextButtonHtml: `React.PropTypes.string`
 HTML to replace for next button element (default `>`)
-#### dateKlass: `React.PropTypes.string`
+#### dateClass: `React.PropTypes.string`
 class to add on every date field
-#### disabledDateKlass: `React.PropTypes.string`
+#### disabledDateClass: `React.PropTypes.string`
 class to add on disabled date fields
-#### enabledDateKlass: `React.PropTypes.string`
+#### enabledDateClass: `React.PropTypes.string`
 class to add on enabled date fields
 
 

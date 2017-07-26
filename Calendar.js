@@ -111,12 +111,12 @@ class MonthCalendar extends Component {
 
     let monthDates = [];
     
-    let dateKlass = this.props.dateKlass || "";
+    let dateClass = this.props.dateClass || this.props.dateEnableKlass || "";
 
-    let containerKlass = this.props.containerKlass || "";
+    let containerClass = this.props.containerClass || this.props.containerKlass || "";
     
-    let prevButtonKlass = this.props.prevButtonKlass || "";
-    let nextButtonKlass = this.props.nextButtonKlass || "";
+    let prevButtonClass = this.props.prevButtonClass || this.props.prevButtonKlass || "";
+    let nextButtonClass = this.props.nextButtonClass || this.props.nextButtonKlass || "";
 
     let prevButtonHtml = this.props.prevButtonHtml == undefined ? "&lt;" : this.props.prevButtonHtml;
     let nextButtonHtml = this.props.nextButtonHtml == undefined ? "&gt;" : this.props.nextButtonHtml;
@@ -124,10 +124,11 @@ class MonthCalendar extends Component {
     while (travDateMonth != currMonth) {
 
       let isItSelected = travDate.toDateString() == selectedDate.toDateString();
+      let disabledDateClass = this.props.disabledDateClass || "";
 
       monthDates.push((
         <td key={travDate}
-          className={`date prev-month disabled-date ${dateKlass}`}>
+          className={`date prev-month disabled-date ${dateClass} ${disabledDateClass}`}>
           {travDate.getDate()}
         </td>
       ));
@@ -143,15 +144,17 @@ class MonthCalendar extends Component {
 
       let isItSelected = travDate.toDateString() == selectedDate.toDateString();
       let selectedKlass = isItSelected ? "selected" : "";
+      let enabledDateClass = this.props.enabledDateClass || "";
+      let disabledDateClass = this.props.disabledDateClass || "";
 
-      let dateEnableKlass = "enabled-date";
+      let dateEnableKlass = `enabled-date ${enabledDateClass}`;
       if (this.props.isDateEnabled && !this.props.isDateEnabled(travDate)) {
-        dateEnableKlass = "disabled-date";
+        dateEnableKlass = `disabled-date ${disabledDateClass}`;
       }
 
       monthDates.push((
         <td key={travDate}
-          className={`date curr-month ${todayKlass} ${dateKlass} ${selectedKlass} ${dateEnableKlass}`}
+          className={`date curr-month ${todayKlass} ${dateClass} ${selectedKlass} ${dateEnableKlass}`}
           onClick={this.onDateClick.bind(this, travDate)}>
           {travDate.getDate()}
         </td>
@@ -163,10 +166,11 @@ class MonthCalendar extends Component {
 
     while (travDate.getDay()) {
       let isItSelected = travDate.toDateString() == selectedDate.toDateString();
+      let disabledDateClass = this.props.disabledDateClass || "";
 
       monthDates.push((
         <td key={travDate}
-          className={`date next-month disabled-date ${dateKlass}`}>
+          className={`date next-month disabled-date ${dateClass} ${disabledDateClass}`}>
           {travDate.getDate()}
         </td>
       ));
@@ -190,10 +194,10 @@ class MonthCalendar extends Component {
 
     return (
       <div className="rc-month-calendar-cont">
-        <table className={`rc-month-calendar ${containerKlass}`}>
+        <table className={`rc-month-calendar ${containerClass}`}>
           <thead>
             <tr className={`header month`}>
-              <th className={`month-button prev ${prevButtonKlass}`}
+              <th className={`month-button prev ${prevButtonClass}`}
                 onClick={this.prevMonth.bind(this)}
                 dangerouslySetInnerHTML={{__html: prevButtonHtml}}></th>
               <th colSpan={5}
@@ -201,7 +205,7 @@ class MonthCalendar extends Component {
                 onClick={this.currMonth.bind(this)}>
                 {month} {year}
               </th>
-              <th className={`month-button next ${nextButtonKlass}`}
+              <th className={`month-button next ${nextButtonClass}`}
                 onClick={this.nextMonth.bind(this)}
                 dangerouslySetInnerHTML={{__html: nextButtonHtml}}></th>
             </tr>
@@ -230,9 +234,13 @@ MonthCalendar.propTypes = {
   containerKlass: React.PropTypes.string,
   prevButtonKlass: React.PropTypes.string,
   nextButtonKlass: React.PropTypes.string,
-  disabledDateKlass: React.PropTypes.string,
-  enabledDateKlass: React.PropTypes.string,
   dateKlass: React.PropTypes.string,
+  containerClass: React.PropTypes.string,
+  prevButtonClass: React.PropTypes.string,
+  nextButtonClass: React.PropTypes.string,
+  disabledDateClass: React.PropTypes.string,
+  enabledDateClass: React.PropTypes.string,
+  dateClass: React.PropTypes.string,
   prevButtonHtml: React.PropTypes.string,
   nextButtonHtml: React.PropTypes.string,
   onDateClick: React.PropTypes.func,

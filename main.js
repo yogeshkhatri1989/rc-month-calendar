@@ -6,17 +6,12 @@ import MonthCalendar from './Calendar';
 class App extends Component {
   render() {
     return <MonthCalendar
-      headerDayKlass={"cal-header-day"}
-      headerWeekDayKlass={"cal-week-day"}
-      weekContKlass={"cal-week-cont"}
-      containerKlass={"cal-container"}
-      headerMonthKlass={"cal-header-month"}
-      monthDescKlass={"cal-month-desc"}
-      prevButtonKlass={"cal-prev-button"}
-      nextButtonKlass={"cal-next-button"}
-      disabledDateKlass={"cal-disabled-date"}
-      enabledDateKlass={"cal-enabled-date"}
-      dateKlass={"cal-date"}
+      containerClass={"cal-container"}
+      prevButtonClass={"cal-prev-button"}
+      nextButtonClass={"cal-next-button"}
+      disabledDateClass={"cal-disabled-date"}
+      enabledDateClass={"cal-enabled-date"}
+      dateClass={"cal-date"}
       prevButtonHtml={"<<"}
       nextButtonHtml={">>"}
       onDateClick={console.log}
