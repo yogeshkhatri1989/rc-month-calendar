@@ -11,12 +11,16 @@ class MonthCalendar extends Component {
     
     super(props);
 
-    let date = this.props.selectedDate instanceof Date ? this.props.selectedDate : new Date();
-    date.setHours(0, 0, 0, 0);
+    let selectedDate = this.props.selectedDate instanceof Date ? new Date(this.props.selectedDate) : new Date();
+    selectedDate.setHours(0, 0, 0, 0);
+
+    let currentDate = this.props.currentDate instanceof Date ? new Date(this.props.currentDate) : selectedDate;
+    currentDate.setHours(0, 0, 0, 0);
 
     this.state = {
-      currentDate: date,
-      selectedDate: date
+      currentDate: currentDate,
+      selectedDate: selectedDate,
+      currView: "date"
     }
     
   }
@@ -87,15 +91,24 @@ class MonthCalendar extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
+
+    let state = {
       selectedDate: nextProps.selectedDate,
       renderTouch: !this.state.renderTouch
-    })
+    }
+
+    if (nextProps.currentDate) {
+      state.currentDate = nextProps.currentDate;
+    }
+
+    this.setState(state)
   }
 
   render() {
 
     let selectedDate = this.state.selectedDate;
+
+    let currView = this.state.currView;
 
     let currentDate = this.state.currentDate;
     let month = months[currentDate.getMonth()];
@@ -192,6 +205,27 @@ class MonthCalendar extends Component {
       dateIndex += 7;
     }
 
+    let monthsContent = [];
+    for (var i = 0; i < 3; i++) {
+      let monthRowContent = [];
+      for (var j = 0; j < 4; j++) {
+
+        monthRowContent.push((
+          <td key={months[(i * 3) + j]} colSpan={"2"}
+            className={"month"}>{months[(i * 3) + j]}</td>
+        ))
+      }
+
+      monthsContent.push((
+        <tr key={`month-row-${i}`}
+          className={`month-row-${i}`}>
+          {monthRowContent}
+        </tr>
+      ))
+    }
+
+    let yearsContent = [];
+
     return (
       <div className="rc-month-calendar-cont">
         <table className={`rc-month-calendar ${containerClass}`}>
@@ -209,19 +243,27 @@ class MonthCalendar extends Component {
                 onClick={this.nextMonth.bind(this)}
                 dangerouslySetInnerHTML={{__html: nextButtonHtml}}></th>
             </tr>
-            <tr className={`header day-names`}>
-              <th className="day sun">S</th>
-              <th className="day mon">M</th>
-              <th className="day tue">T</th>
-              <th className="day wed">W</th>
-              <th className="day thu">T</th>
-              <th className="day fri">F</th>
-              <th className="day sat">S</th>
-            </tr>
+            {
+              currView == "date" &&  (<tr className={`header day-names`}>
+                                  <th className="day sun">S</th>
+                                  <th className="day mon">M</th>
+                                  <th className="day tue">T</th>
+                                  <th className="day wed">W</th>
+                                  <th className="day thu">T</th>
+                                  <th className="day fri">F</th>
+                                  <th className="day sat">S</th>
+                                </tr>)
+            }
           </thead>
           <tbody>
             {
-              datesContent
+              currView == "date" && datesContent
+            }
+            {
+              currView == "month" && monthsContent
+            }
+            {
+              currView == "year" && yearsContent
             }
           </tbody>
         </table>

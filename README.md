@@ -25,8 +25,7 @@ ReactDOM.render(<App/>, document.getElementById('container'));
 ## Documentation
 
 #### onDateClick: `React.PropTypes.func`
-Callback called when clicked on any date (receives `date` and `oldDate` as arguments - both type `Date`)
-
+Callback called when clicked on any date (receives `date` and `oldDate` as arguments - both type `Date`)<br />
 Adds `selected` class on the clicked date.
 #### onMonthChange: `React.PropTypes.func`
 Callback called when month changed (receives `newMonth` and `oldMonth` as arguments - both type `Date`)
@@ -34,6 +33,9 @@ Callback called when month changed (receives `newMonth` and `oldMonth` as argume
 Callback to check if date should be enabled for click, if not function passed, all dates are enabled by default
 #### selectedDate: `React.PropTypes.object`
 current date to be selected, default `new Date`
+#### currentDate: `React.PropTypes.object`
+current month view to be shown by default, default `selectedDate`<br />
+using this, month navigation can be handled from outside too
 #### containerClass: `React.PropTypes.string`
 class name to add on the monthe calendar top level element.
 #### prevButtonClass: `React.PropTypes.string`

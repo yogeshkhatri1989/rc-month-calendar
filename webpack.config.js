@@ -3,14 +3,13 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var extractCSS = new ExtractTextPlugin({
-                        filename: "[name].css",
+                        filename: "style.css",
                         allChunks: true
                       });
 
 module.exports = {
   entry: {
-    main: "./main.js",
-    calendar: "./Calendar.js"
+    main: "./main.js"
   },
   output: {
     path: path.resolve(__dirname, "dist"),
