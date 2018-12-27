@@ -57,3 +57,5 @@ class to add on enabled date fields
 
 ## Screenshot
 ![Month View](https://raw.githubusercontent.com/yogeshkhatri1989/rc-month-calendar/master/screenshots/s1.png)
+
+[Demo](https://yogeshkhatri1989.github.io/rc-month-calendar/dist/)
